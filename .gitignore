@@ -14,3 +14,7 @@ local.properties
 
 # macOS specific files
 .DS_Store
+
+# Local dev scratch files
+hs_err_pid*.log
+replay_pid*.log

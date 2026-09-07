@@ -6,6 +6,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.media3.common.util.UnstableApi
+import eu.kanade.tachiyomi.ui.player.SingleActionGesture
 import eu.kanade.tachiyomi.ui.player.exo.ExoPlayerActivity
 import eu.kanade.tachiyomi.ui.player.exo.utils.formatTime
 import kotlinx.coroutines.delay
