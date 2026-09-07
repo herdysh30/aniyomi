@@ -15,6 +15,7 @@ sealed class AnimeExtension {
     abstract val lang: String?
     abstract val isNsfw: Boolean
     abstract val isTorrent: Boolean
+    abstract val prefersExoPlayer: Boolean
 
     data class Installed(
         override val name: String,
@@ -25,6 +26,7 @@ sealed class AnimeExtension {
         override val lang: String,
         override val isNsfw: Boolean,
         override val isTorrent: Boolean,
+        override val prefersExoPlayer: Boolean = false,
         val pkgFactory: String?,
         val sources: List<AnimeSource>,
         val icon: Drawable?,
@@ -43,6 +45,7 @@ sealed class AnimeExtension {
         override val lang: String,
         override val isNsfw: Boolean,
         override val isTorrent: Boolean,
+        override val prefersExoPlayer: Boolean = false,
         val sources: List<AnimeSource>,
         val apkUrl: String,
         val iconUrl: String,
@@ -75,5 +78,6 @@ sealed class AnimeExtension {
         override val lang: String? = null,
         override val isNsfw: Boolean = false,
         override val isTorrent: Boolean = false,
+        override val prefersExoPlayer: Boolean = false,
     ) : AnimeExtension()
 }

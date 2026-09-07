@@ -582,6 +582,10 @@ class AnimeDownloader(
 
         FFmpegKitConfig.setLogRedirectionStrategy(LogRedirectionStrategy.ALWAYS_PRINT_LOGS)
         val ffmpegOptions = getFFmpegOptions(video, headerOptions, ffmpegFilename())
+        logcat(LogPriority.INFO) {
+            "ExoDL: subs=${video.subtitleTracks.size} audio=${video.audioTracks.size} " +
+                "args=${ffmpegOptions.joinToString(" ")}"
+        }
         val ffprobeCommand = { file: String, ffprobeHeaders: String? ->
             FFmpegKitConfig.parseArguments(
                 "${ffprobeHeaders?.plus(" ") ?: ""}-v quiet -show_entries " +
@@ -592,10 +596,11 @@ class AnimeDownloader(
         var duration = 0L
 
         val logCallback = LogCallback { log ->
-            if (log.level <= Level.AV_LOG_WARNING) {
-                log.message?.let {
-                    logcat(LogPriority.ERROR) { it }
-                }
+            val msg = log.message ?: return@LogCallback
+            if (msg.contains("Stream #")) {
+                logcat(LogPriority.INFO) { "ExoDL: ${msg.trim()}" }
+            } else if (log.level <= Level.AV_LOG_WARNING) {
+                logcat(LogPriority.ERROR) { msg }
             }
         }
 
@@ -677,7 +682,10 @@ class AnimeDownloader(
         val command = listOf(
             videoInput, subtitleInputs, audioInputs,
             "-map 0:v", audioMaps, "-map 0:a?", subtitleMaps, "-map 0:s? -map 0:t?",
-            "-f matroska -c:a copy -c:v copy -c:s copy",
+            // ponytail: -c:s srt (bukan copy) — ffmpeg copy menulis WebVTT
+            // sebagai D_WEBVTT/SUBTITLES yang tidak dikenali MatroskaExtractor
+            // media3; srt menghasilkan S_TEXT/UTF8 yang universal (Exo+MPV).
+            "-f matroska -c:a copy -c:v copy -c:s srt",
             subtitleMetadata, audioMetadata, sourceVideoOptions,
             "\"$ffmpegFilename\" -y",
         )

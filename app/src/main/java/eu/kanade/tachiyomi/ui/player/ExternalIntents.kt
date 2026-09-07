@@ -248,7 +248,8 @@ class ExternalIntents {
                     component = getComponent(pkgName)
                 }
             }
-            setDataAndType(uri, "video/*")
+            val mimeType = getMime(uri)
+            setDataAndType(uri, mimeType)
             addExtrasAndFlags(true, this)
             addVideoHeaders(true, video, this)
 
@@ -266,8 +267,14 @@ class ExternalIntents {
             putExtra("subs.name", video.subtitleTracks.map { it.lang }.toTypedArray())
             putExtra("subs.enable", requestedUrl?.let { arrayOf(it.toUri()) } ?: emptyArray())
 
-            // VLC - seems to only work for local sub files
-            requestedUrl?.let { putExtra("subtitles_location", it) }
+            // VLC
+            requestedUrl?.let {
+                putExtra("subtitles_location", it)
+                putExtra("subtitle", it)
+            }
+            video.subtitleTracks.firstOrNull()?.let {
+                putExtra("subtitle_url", it.url)
+            }
         }
     }
 

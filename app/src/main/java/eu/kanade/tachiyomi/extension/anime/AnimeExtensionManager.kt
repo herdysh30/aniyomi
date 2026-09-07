@@ -88,6 +88,17 @@ class AnimeExtensionManager(
             ?.pkgName
     }
 
+    /**
+     * The installed extension that owns [sourceId], or null when the source
+     * is stubbed/uninstalled. Used for per-extension playback routing
+     * (prefersExoPlayer flag from the extension's manifest metadata).
+     */
+    fun getSourceExtension(sourceId: Long): AnimeExtension.Installed? {
+        return installedExtensionsFlow.value.find { extension ->
+            extension.sources.any { it.id == sourceId }
+        }
+    }
+
     fun getExtensionPackageAsFlow(sourceId: Long): Flow<String?> {
         return installedExtensionsFlow.map { extensions ->
             extensions.find { extension ->

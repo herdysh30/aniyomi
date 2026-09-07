@@ -306,6 +306,12 @@ dependencies {
 
     // mpv-android
     implementation(aniyomilibs.aniyomi.mpv)
+    // Media3 (ExoPlayer) — alternative decoder backend
+    implementation(aniyomilibs.media3.exoplayer)
+    implementation(aniyomilibs.media3.exoplayer.hls)
+    implementation(aniyomilibs.media3.extractor)
+    implementation(aniyomilibs.media3.ui)
+    implementation(aniyomilibs.media3.session)
     // FFmpeg-kit
     implementation(aniyomilibs.ffmpeg.kit)
     implementation(aniyomilibs.arthenica.smartexceptions)

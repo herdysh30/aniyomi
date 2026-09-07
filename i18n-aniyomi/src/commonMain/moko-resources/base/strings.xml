@@ -138,6 +138,8 @@
     <!-- Player Settings - Decoder -->
     <string name="pref_player_decoder">Decoder</string>
     <string name="pref_player_decoder_summary">Hardware decoding, pixel format, debanding</string>
+    <string name="pref_use_exoplayer_title">Use ExoPlayer (Media3) engine</string>
+    <string name="pref_use_exoplayer_subtitle">Alternative decoder based on AndroidX Media3. Fixes seek issues on demuxed HLS streams. Some MPV-only panels (video filters, delays) are disabled.</string>
     <string name="pref_try_hw">Try hardware decoding</string>
     <string name="pref_gpu_next_title">Enable gpu-next</string>
     <string name="pref_gpu_next_subtitle">A new video rendering backend</string>

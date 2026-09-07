@@ -27,8 +27,14 @@ object PlayerSettingsDecoderScreen : SearchableSettings {
         val useGpuNext = decoderPreferences.gpuNext()
         val debanding = decoderPreferences.videoDebanding()
         val yuv420p = decoderPreferences.useYUV420P()
+        val useExoPlayer = decoderPreferences.useExoPlayer()
 
         return listOf(
+            Preference.PreferenceItem.SwitchPreference(
+                preference = useExoPlayer,
+                title = stringResource(AYMR.strings.pref_use_exoplayer_title),
+                subtitle = stringResource(AYMR.strings.pref_use_exoplayer_subtitle),
+            ),
             Preference.PreferenceItem.SwitchPreference(
                 preference = tryHw,
                 title = stringResource(AYMR.strings.pref_try_hw),

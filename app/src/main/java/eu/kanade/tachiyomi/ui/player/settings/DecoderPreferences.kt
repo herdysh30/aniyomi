@@ -12,6 +12,9 @@ class DecoderPreferences(
     fun videoDebanding() = preferenceStore.getEnum("pref_video_debanding", Debanding.None)
     fun useYUV420P() = preferenceStore.getBoolean("use_yuv420p", true)
 
+    // When true, internal playback uses ExoPlayer (Media3) instead of MPV.
+    fun useExoPlayer() = preferenceStore.getBoolean("pref_use_exoplayer", false)
+
     // Non-preferences
 
     fun brightnessFilter() = preferenceStore.getInt("pref_player_filter_brightness")

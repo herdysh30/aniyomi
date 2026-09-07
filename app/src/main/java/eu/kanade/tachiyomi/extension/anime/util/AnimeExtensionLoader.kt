@@ -41,6 +41,7 @@ internal object AnimeExtensionLoader {
     private const val METADATA_SOURCE_CLASS = "tachiyomi.animeextension.class"
     private const val METADATA_SOURCE_FACTORY = "tachiyomi.animeextension.factory"
     private const val METADATA_NSFW = "tachiyomi.animeextension.nsfw"
+    private const val METADATA_USE_EXOPLAYER = "tachiyomi.animeextension.useexoplayer"
     private const val METADATA_HAS_README = "tachiyomi.animeextension.hasReadme"
     private const val METADATA_HAS_CHANGELOG = "tachiyomi.animeextension.hasChangelog"
     private const val METADATA_TORRENT = "tachiyomi.animeextension.torrent"
@@ -295,6 +296,7 @@ internal object AnimeExtensionLoader {
 
         val isTorrent = appInfo.metaData.getBoolean(METADATA_IS_TORRENT) ||
             appInfo.metaData.getInt(METADATA_TORRENT) == 1
+        val prefersExoPlayer = appInfo.metaData.getInt(METADATA_USE_EXOPLAYER) == 1
         val classLoader = try {
             ChildFirstPathClassLoader(appInfo.sourceDir, null, context.classLoader)
         } catch (e: Exception) {
@@ -361,6 +363,7 @@ internal object AnimeExtensionLoader {
             lang = lang,
             isNsfw = isNsfw,
             isTorrent = isTorrent,
+            prefersExoPlayer = prefersExoPlayer,
             sources = sources,
             pkgFactory = appInfo.metaData.getString(METADATA_SOURCE_FACTORY),
             icon = appInfo.loadIcon(pkgManager),

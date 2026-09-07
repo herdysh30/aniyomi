@@ -72,6 +72,7 @@ import eu.kanade.presentation.util.AssistContentScreen
 import eu.kanade.presentation.util.DefaultNavigatorScreenTransition
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.animesource.model.Hoster
+import eu.kanade.tachiyomi.animesource.model.SerializableHoster.Companion.serialize
 import eu.kanade.tachiyomi.animesource.model.Video
 import eu.kanade.tachiyomi.core.common.Constants
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -81,6 +82,7 @@ import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.player.service.HttpServerService
 import eu.kanade.tachiyomi.data.updater.AppUpdateChecker
 import eu.kanade.tachiyomi.data.updater.RELEASE_URL
+import eu.kanade.tachiyomi.extension.anime.AnimeExtensionManager
 import eu.kanade.tachiyomi.extension.anime.api.AnimeExtensionApi
 import eu.kanade.tachiyomi.extension.manga.api.MangaExtensionApi
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
@@ -97,7 +99,9 @@ import eu.kanade.tachiyomi.ui.home.HomeScreen
 import eu.kanade.tachiyomi.ui.more.NewUpdateScreen
 import eu.kanade.tachiyomi.ui.more.OnboardingScreen
 import eu.kanade.tachiyomi.ui.player.ExternalIntents
+import eu.kanade.tachiyomi.ui.player.exo.ExoPlayerActivity
 import eu.kanade.tachiyomi.ui.player.PlayerActivity
+import eu.kanade.tachiyomi.ui.player.settings.DecoderPreferences
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.isNavigationBarNeedsScrim
 import eu.kanade.tachiyomi.util.system.openInBrowser
@@ -627,6 +631,19 @@ class MainActivity : BaseActivity() {
                     null
                 } ?: return
                 externalPlayerResult?.launch(intent) ?: return
+            } else if (sourcePrefersExoPlayer(context, animeId, sourceId)) {
+                // Instant: the player opens with a spinner and resolves
+                // hosters/videos inside itself (MPV-parity UX).
+                context.startActivity(
+                    ExoPlayerActivity.newIntent(
+                        context,
+                        animeId,
+                        episodeId,
+                        hosterList?.let { it.serialize() },
+                        hosterIndex,
+                        videoIndex,
+                    ),
+                )
             } else {
                 context.startActivity(
                     PlayerActivity.newIntent(
@@ -657,6 +674,17 @@ class MainActivity : BaseActivity() {
             }
 
             return Pair(ready == true, HttpServerService.port)
+        }
+
+        /**
+         * True when the extension declaring this source opted into the
+         * ExoPlayer (Media3) backend via the `useExoPlayer` build flag —
+         * per-source, so other extensions keep using MPV untouched.
+         */
+        private suspend fun sourcePrefersExoPlayer(context: Context, animeId: Long, sourceId: Long?): Boolean {
+            val sourceId = sourceId ?: (Injekt.get<GetAnime>().await(animeId)?.source ?: return false)
+            val extension = Injekt.get<AnimeExtensionManager>().getSourceExtension(sourceId) ?: return false
+            return extension.prefersExoPlayer
         }
     }
 }
