@@ -220,7 +220,7 @@
                 android:resource="@xml/s_pen_actions"/>
         </activity>
         <activity
-            android:name=".ui.player.ExoPlayerActivity"
+            android:name=".ui.player.exo.ExoPlayerActivity"
             android:autoRemoveFromRecents="true"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|keyboardHidden|keyboard|uiMode"
             android:exported="false"
